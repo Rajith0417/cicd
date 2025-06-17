@@ -30,9 +30,20 @@ jobs:
       - name: 🛠️ Build Angular app
         run: npm run build -- --configuration production --base-href=/cicd/
 
-      - name: 🚀 Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      # - name: 🚀 Deploy to GitHub Pages
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     branch: gh-pages           # The branch the action should deploy to.
+      #     folder: dist/cicd/browser  # The folder the action should deploy.
+      #     token: ${{ secrets.cicd }}
+
+      - name: ☁️ Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          branch: gh-pages           # The branch the action should deploy to.
-          folder: dist/cicd/browser  # The folder the action should deploy.
-          token: ${{ secrets.cicd }}
+          aws-access-key-id: ${{ secrets.AKIA5QVJ6BLKWJ5E437U }}
+          aws-secret-access-key: ${{ secrets.1GGXhF9HjelgT5Cw65XjO0H6NPLAyYpZAQYKWKlq }}
+          aws-region: eu-north-1 # Change this to your region (e.g., us-east-1)
+
+      - name: 📤 Deploy to S3
+        run: |
+          aws s3 sync dist/cicd/browser s3://your-s3-bucket-name --delete
